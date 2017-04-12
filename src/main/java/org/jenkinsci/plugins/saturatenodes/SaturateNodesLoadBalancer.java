@@ -23,12 +23,12 @@ import java.util.logging.Logger;
 
 public class SaturateNodesLoadBalancer extends LoadBalancer implements Describable<SaturateNodesLoadBalancer> {
     private static final Logger LOGGER = Logger.getLogger(SaturateNodesLoadBalancer.class.getName());
-    private static final Comparator<ExecutorChunk> EXECUTOR_CHUNK_COMPARATOR = new ExecutorChunkComparator();
+    private static final Comparator<ExecutorChunkContainer> EXECUTOR_CHUNK_COMPARATOR = new ExecutorChunkComparator();
     private static final DescriptorImpl DESCRIPTOR = new DescriptorImpl();
 
     @Override
     public MappingWorksheet.Mapping map(Queue.Task task, MappingWorksheet ws) {
-        List<ExecutorChunk> usableChunks = getApplicableSortedByConnectTime(ws);
+        List<ExecutorChunkContainer> usableChunks = getApplicableSortedByConnectTime(ws);
         Mapping m = ws.new Mapping();
         if (assignExecutors(m, usableChunks) && m.isCompletelyValid()) {
             return m;
@@ -56,11 +56,11 @@ public class SaturateNodesLoadBalancer extends LoadBalancer implements Describab
         }
     }
 
-    private List<ExecutorChunk> getApplicableSortedByConnectTime(MappingWorksheet ws) {
-        final List<ExecutorChunk> chunks = new ArrayList<>();
+    private List<ExecutorChunkContainer> getApplicableSortedByConnectTime(MappingWorksheet ws) {
+        final List<ExecutorChunkContainer> chunks = new ArrayList<>();
         for (MappingWorksheet.WorkChunk workChunk : ws.works) {
             for (ExecutorChunk ec : workChunk.applicableExecutorChunks()) {
-                chunks.add(ec);
+                chunks.add(new ExecutorChunkContainerImpl(ec));
             }
         }
 
@@ -68,12 +68,12 @@ public class SaturateNodesLoadBalancer extends LoadBalancer implements Describab
         return chunks;
     }
 
-    private boolean assignExecutors(Mapping m, List<ExecutorChunk> executors) {
+    private boolean assignExecutors(Mapping m, List<ExecutorChunkContainer> executors) {
         int i = 0;
 
-        for (ExecutorChunk ec : executors) {
-            for (int j = 0; j < ec.computer.countIdle(); j++) {
-                m.assign(i, ec);
+        for (ExecutorChunkContainer executorChunkContainer : executors) {
+            for (int j = 0; j < executorChunkContainer.getNumberOfIdleExecutors(); j++) {
+                m.assign(i, executorChunkContainer.getExecutorChunk());
                 i++;
 
                 if (m.size() == i) {
