@@ -1,0 +1,12 @@
+<div>
+    <p>By default Jenkins is using consistent hashing algorithm for load balancing.
+    It always tries to execute job on the node there it was executed before.
+    This approach has one big disadvantage in case of cloud based CI - it keeps a lot of nodes up and running.</p>
+    Saturate Nodes Load Balancer addresses this issue using pretty simple approach:
+    <ul>
+        <li>select node with applicable label</li>
+        <li>it orders node based on connection time (time then node was connected to Jenkins master)</li>
+        <li>pick-up first available executor</li>
+    </ul>
+  As result it should minimise number of used nodes.
+</div>
