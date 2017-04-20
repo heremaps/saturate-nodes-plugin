@@ -34,7 +34,6 @@ public class SaturateNodesLoadBalancer extends LoadBalancer implements Describab
             return m;
         }
 
-        LOGGER.info(String.format("Unable to define ExecutorChunks for %s. Will re-try", task.getName()));
         return null;
     }
 
