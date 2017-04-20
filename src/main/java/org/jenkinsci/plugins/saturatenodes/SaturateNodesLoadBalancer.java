@@ -60,7 +60,9 @@ public class SaturateNodesLoadBalancer extends LoadBalancer implements Describab
         final List<ExecutorChunkContainer> chunks = new ArrayList<>();
         for (MappingWorksheet.WorkChunk workChunk : ws.works) {
             for (ExecutorChunk ec : workChunk.applicableExecutorChunks()) {
-                chunks.add(new ExecutorChunkContainerImpl(ec));
+                if (ec.computer.isPartiallyIdle()) {
+                    chunks.add(new ExecutorChunkContainerImpl(ec));
+                }
             }
         }
 
