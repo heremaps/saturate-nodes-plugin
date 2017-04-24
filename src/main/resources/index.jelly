@@ -1,2 +1,2 @@
 <?jelly escape-by-default='true'?>
-<div>This plugin adds option to enable load balancer optimized for Cloud CI</div>
+<div>This plugin adds an option to enable a load balancer optimized for Cloud CI</div>
