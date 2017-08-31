@@ -95,10 +95,14 @@ If you want to monitor its logs, you can add `org.jenkinsci.plugins.saturatenode
 
 Also, you can configure the [system Groovy script](https://wiki.jenkins-ci.org/display/JENKINS/Groovy+plugin) and execute it during the night (to minimize number of used nodes in nightly builds):
 ```groovy
-import hudson.model.LoadBalancer
 import org.jenkinsci.plugins.saturatenodes.SaturateNodesLoadBalancer
 
 Jenkins.getInstance().getQueue().setLoadBalancer(new SaturateNodesLoadBalancer())
+```
+And to restore default one:
+```groovy
+import hudson.model.LoadBalancer
+
 Jenkins.getInstance().getQueue().setLoadBalancer(LoadBalancer.CONSISTENT_HASH)
 ```
 
